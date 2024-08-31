@@ -98,7 +98,7 @@
 		.navbar-brand{
 			font-size:30px;
 		}
-	  .parallax {
+	  	.parallax {
 			/* The image used */
 			background-image: url("{{'/images/bg.jpg'}}");
 
@@ -206,6 +206,9 @@
 	  <li class="nav-item" >
         <a class="nav-link" href="Uploadproperty" style="color:white;">Upload Property</a>
       </li>
+	  <li class="nav-item">
+        <a class="nav-link" href="editproperty"  style="color:white" >Edit Property</a>
+      </li> 
       <li class="nav-item" >
         <a class="nav-link" onclick="openModal()" style="color:white;cursor:pointer">Logout</a>
       </li>
@@ -246,10 +249,9 @@
 	<img src="{{'/images/banner.jpg'}}" class="img-fluid">
 	
 	<div class="waveWrapper waveAnimation">
-  
-			  <div class="waveWrapperInner bgMiddle">
-				<div class="wave waveMiddle" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-mid.png')"></div>
-			  </div>
+		<div class="waveWrapperInner bgMiddle">
+		<div class="wave waveMiddle" style="background-image: url('http://front-end-noobs.com/jecko/img/wave-mid.png')"></div>
+	</div>
 			  
 	</div>
    </div>
@@ -284,91 +286,100 @@
 				<div class="col-lg-12" style="margin-top:3%;">
 					<center><h2 class="searchclass">Find your dream home</h2></center>
 				<br>	
-				<form method="post" action="propertysearch">
-					@csrf
-					<div class="row">
-						<div class="col-lg-3"></div>
-						<div class="col-lg-6">
-							<div class="row">
-								<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
-									<label style="color:white">State</label>
-									<div class="stateselect">
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
-									<label style="color:white">City</label>
-									<div class="cityselect">
-										<select class="form-control city" name="city">
-										<option>Select City</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
-									<label style="color:white">Property</label>
-									<select class="form-control" name="property">
-										<option value="Residential">Residential</option>
-										<option value="Commercial">Commercial</option>
-									</select>
-								</div>
-								<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
-									<label style="color:white">BHK</label>
-									<select class="form-control" name="bhk">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-									</select>
-								</div>
-								<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
-									<label style="color:white">Search For</label>
-									<select class="form-control" name="propertyfor">
-									<option value="Buy">Buy</option>
-									<option value="Rent">Rent</option>
-									</select>
-								</div>
-								<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px;margin-top:40px">
-									<input type="submit" value="Search" class="w3-btn w3-red">
+				<div class="row">
+					<div class="col-lg-3"></div>
+					<div class="col-lg-6">
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:white">State</label>
+								<div class="stateselect">
 								</div>
 							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:white">City</label>
+								<div class="cityselect">
+									<select class="form-control city">
+									<option  value="">Select City</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:white">Property</label>
+								<select class="form-control property">
+									<option value="Residential">Residential</option>
+									<option value="Commercial">Commercial</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:white">BHK</label>
+								<select class="form-control bhk">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:white">Search For</label>
+								<select class="form-control propertyfor">
+								<option value="Buy">Buy</option>
+								<option value="Rent">Rent</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:white">Price</label>
+								<input class="form-control proprice" placeholder="Enter Price">
+							</div>
+							<div class="col-lg-5 col-md-5 col-sm-5" style="margin-bottom:15px;margin-top:40px"></div>
+							<div class="col-lg-7 col-md-7 col-sm-7" style="margin-bottom:35px;margin-top:20px">
+								<input type="button" value="Search" class="w3-btn w3-red formsubmit">
+							</div>
 						</div>
-						<div class="col-lg-3"></div>					
-					</div>	
-				</form>
-					
+					</div>
+					<div class="col-lg-3"></div>					
+				</div>
 				</div>	
-				   
-				
-				
 			</div>
-		
-		
-		
-		<div class="row">
+		<div class="row"  id="property-row">
 			<div class="col-lg-12" style="margin-top:2%;margin-bottom:2%"><h3 style="font-size:35px;letter-spacing:8px;text-align:center">Properties</h3></div>
 			@foreach($property as $stud)
-                
-                <div class="col-xl-4 col-lg-4 col-sm-6" style="margin-bottom:20px">
-                    <div class="card">
-                        <div class="card-body">
-                            <img src="{{ url('images/' . $stud->rcode . '.jpg') }}" class="img-fluid"><br><br>
+			
+				<div class="col-xl-4 col-lg-4 col-sm-6" style="margin-bottom:20px">
+					<div class="card">
+						<div class="card-body">
+							<img src="{{ url('images/' . $stud->rcode . '.jpg') }}" class="img-fluid"><br><br>
 							<div style="margin-bottom:10px"><span style="font-weight:bold">{{ $stud->property }} Prpperty</span><span style="float:right">{{ $stud->bhk }} BHK </span></div>
 							<div style="margin-bottom:10px"><span>{{ $stud->category }}</span><span style="float:right">{{ $stud->amount }} {{ $stud->amounttype }}</span></div>
 							<div><a href="/propertyview/{{ $stud->rcode }}"><button class="btn btn-danger">View Property</button></a></div>
-                            
-                        </div>
-                    </div>
-                </div>
-                @endforeach			
+							
+						</div>
+					</div>
+				</div>
+			@endforeach			
+			<div class="col-lg-12">
+				@if ($property->hasPages())
+					<div class="d-flex justify-content-center">
+						@if ($property->onFirstPage())
+							<button class="btn btn-secondary mr-2 " disabled>Previous</button>
+						@else
+							<a href="{{ $property->previousPageUrl() }}" class="btn btn-primary mr-2 pagination-link">Previous</a>
+						@endif
+
+						@if ($property->hasMorePages())
+							<a href="{{ $property->nextPageUrl() }}" class="btn btn-primary pagination-link">Next</a>
+						@else
+							<button class="btn btn-secondary" disabled>Next</button>
+						@endif
+					</div>
+				@endif
+        </div>
 		</div>
-		
-		
-		
-			<div class="row" style="margin-top:15%">
+		<div class="row" style="margin-top:15%">
 		<div class="col-sm-12">
 			<div class="ocean">
 			  <div class="wave"></div>
@@ -401,29 +412,73 @@
 </html>
 
 
-
 <script>
-        function openModal() {
-            var modal = document.getElementById('myModal');
-            modal.style.display = 'block';
-            document.body.style.overflowY = 'none'; // Disable scrolling
-        }
-		function closeModal() {
-            var modal = document.getElementById('myModal');
-			modal.style.display = "none";
-            document.body.style.overflow = 'auto'; // Enable scrolling
-            
-        }
+	$(document).ready(function() {
+        if (sessionStorage.getItem('scrollToProperties')) {
+            $('html, body').animate({
+                scrollTop: $('#property-row').offset().top
+            }, 1000); // Adjust the speed as needed
 
-        // Close the modal when clicking outside of it
-        window.onclick = function(event) {
-            var modal = document.getElementById('myModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-                document.body.style.overflow = 'auto'; // Enable scrolling
-            }
+            sessionStorage.removeItem('scrollToProperties');
         }
+        $(document).on('click', '.pagination-link', function(event) {
+            sessionStorage.setItem('scrollToProperties', 'true');
+        });
+    });
+	$(document).on("click",".formsubmit",function(){
+		var states = $(".states").val();
+		var city = $(".city").val();
+		var property = $(".property").val();
+		var bhk = $(".bhk").val();
+		var propertyfor = $(".propertyfor").val();
+		var price = $(".proprice").val();
+		if(states!="" && city!="" && property!="" && bhk!="" && propertyfor!="" && price!=""){
+			$.ajax({
+                url: '/propertysearch',
+                type: 'post',
+                data: {
+					states: states,
+					city: city,
+					property: property,
+					bhk: bhk,
+					propertyfor: propertyfor,
+					price: price,
+					_token: '{{ csrf_token() }}'
+				},
+				success: function(response) {
+					window.location.href = '/searchproperty'; 
+				},
+				error: function(xhr, status, error) {
+					console.error('AJAX error:', status, error);
+					alert('An error occurred while processing your request.');
+				}
+            });
+		}else{
+			alert("All Field Required");
+		}
+	});
+
+	function openModal() {
+		var modal = document.getElementById('myModal');
+		modal.style.display = 'block';
+		document.body.style.overflowY = 'none'; // Disable scrolling
+	}
+	function closeModal() {
+		var modal = document.getElementById('myModal');
+		modal.style.display = "none";
+		document.body.style.overflow = 'auto'; // Enable scrolling
 		
+	}
+
+	// Close the modal when clicking outside of it
+	window.onclick = function(event) {
+		var modal = document.getElementById('myModal');
+		if (event.target == modal) {
+			modal.style.display = "none";
+			document.body.style.overflow = 'auto'; // Enable scrolling
+		}
+	}
+	
 		
 	$(document).ready(function(){
         $.ajax({
@@ -447,4 +502,5 @@
         });
     });
 
-    </script>
+	
+</script>

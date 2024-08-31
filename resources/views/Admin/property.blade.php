@@ -18,26 +18,41 @@
             <?php
             }
         ?>
-          @foreach($property as $stud)
-                
-                <div class="col-xl-4 col-lg-4 col-sm-6" style="margin-bottom:20px">
-                    <div class="card">
-                        <div class="card-body">
-                            <img src="{{ url('images/' . $stud->rcode . '.jpg') }}" class="img-fluid"><br><br>
-                            <center>
-                                <b>
-                                <label>
-                                    {{ $stud->property }}
-                                </b><br>
-                                    {{ $stud->category }}
-                                </label><br><br>
-                                <a href="/Admin/propertyview/{{ $stud->rcode }}"><button class="btn btn-danger">View</button></a>
-                            </center>
-                        </div>
+        @foreach($property as $stud)
+            <div class="col-xl-4 col-lg-4 col-sm-6" style="margin-bottom:20px">
+                <div class="card">
+                    <div class="card-body">
+                        <img src="{{ url('images/' . $stud->rcode . '.jpg') }}" class="img-fluid"><br><br>
+                        <center>
+                            <b>
+                            <label>
+                                {{ $stud->property }}
+                            </b><br>
+                                {{ $stud->category }}
+                            </label><br><br>
+                            <a href="/Admin/propertyview/{{ $stud->rcode }}"><button class="btn btn-danger">View</button></a>
+                        </center>
                     </div>
                 </div>
-                @endforeach
-           
+            </div>
+        @endforeach
+        <div class="col-lg-12">
+            @if ($property->hasPages())
+                <div class="d-flex justify-content-center">
+                    @if ($property->onFirstPage())
+                        <button class="btn btn-secondary mr-2" disabled>Previous</button>
+                    @else
+                        <a href="{{ $property->previousPageUrl() }}" class="btn btn-primary mr-2">Previous</a>
+                    @endif
+
+                    @if ($property->hasMorePages())
+                        <a href="{{ $property->nextPageUrl() }}" class="btn btn-primary">Next</a>
+                    @else
+                        <button class="btn btn-secondary" disabled>Next</button>
+                    @endif
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 

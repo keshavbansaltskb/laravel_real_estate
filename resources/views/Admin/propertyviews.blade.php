@@ -77,6 +77,43 @@
         <label><b>Property Details</b></label><br>
         <label>{{$detail->description}}</label>
     </div>
+    <div class="row">
+        @if(count($message) > 0)
+            <div class="col-12 text-center my-4">
+                <label><b style="font-size:24px;">Messages from Users About This Property</b></label>
+            </div>
+
+            @foreach($message as $stud)
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Messenger Details -->
+                                <div class="col-md-6 mb-3">
+                                    <h5><b>Messenger Details</b></h5>
+                                    <p class="mb-1"><strong>Name:</strong> {{ $stud->name }}</p>
+                                    <p class="mb-1"><strong>Email:</strong> {{ $stud->email }}</p>
+                                    <p class="mb-1"><strong>Phone:</strong> {{ $stud->phone }}</p>
+                                    <p class="mb-1"><strong>Message:</strong> {{ $stud->message }}</p>
+                                </div>
+                                
+                                <!-- Uploader Details -->
+                                <div class="col-md-6 mb-3">
+                                    <h5><b>Uploader Details</b></h5>
+                                    <p class="mb-1"><strong>Username:</strong> {{ $stud->username }}</p>
+                                    <p class="mb-1"><strong>Email:</strong> {{ $stud->useremail }}</p>
+                                    <p class="mb-1"><strong>Phone:</strong> {{ $stud->userphone }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach 
+        @endif
+    </div>
+
+    </div>
+
 </div>
 
 @endsection

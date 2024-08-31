@@ -34,6 +34,71 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="searchmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-weight:bold">Search Any Property </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div class="row">
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:black;font-weight:bold">State</label>
+								<div class="stateselect">
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:black;font-weight:bold">City</label>
+								<div class="cityselect">
+									<select class="form-control city">
+									<option  value="">Select City</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:black;font-weight:bold">Property</label>
+								<select class="form-control property">
+									<option value="Residential">Residential</option>
+									<option value="Commercial">Commercial</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:black;font-weight:bold">BHK</label>
+								<select class="form-control bhk">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:black;font-weight:bold">Search For</label>
+								<select class="form-control propertyfor">
+								<option value="Buy">Buy</option>
+								<option value="Rent">Rent</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom:15px">
+								<label style="color:black;font-weight:bold">Price</label>
+								<input class="form-control proprice" placeholder="Enter Price">
+							</div>
+						</div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="Search" class="w3-btn btn-danger formsubmit">
+      </div>
+    </div>
+  </div>
+</div>
 <nav class="navbar navbar-expand-md bg-dark fixed-top">
   <a class="navbar-brand" href="/" style="color:white">RealEstate</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -46,7 +111,10 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/ContactUs"  style="color:white">Contact Us</a>
-      </li>  
+      </li> 
+      <li class="nav-item" >
+        <a  class="nav-link"  data-toggle="modal" data-target="#searchmodal" style="color:white;cursor:pointer">Search</a>
+      </li> 
       <?php 
           $login = Cookie::get("realestate");
           if(isset($login)){
@@ -61,6 +129,9 @@
       <li class="nav-item" >
         <a class="nav-link" href="/Uploadproperty" style="color:white;">Upload Property</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/editproperty"  style="color:white" >Edit Property</a>
+      </li> 
       <li class="nav-item">
         <a class="nav-link" href=""  style="color:white" data-toggle="modal" data-target="#logoutmodal" >Logout</a>
       </li> 
@@ -80,4 +151,61 @@
 </nav>
 <br>
 
+<script>
+  $(document).on("click",".formsubmit",function(){
+		var states = $(".states").val();
+		var city = $(".city").val();
+		var property = $(".property").val();
+		var bhk = $(".bhk").val();
+		var propertyfor = $(".propertyfor").val();
+		var price = $(".proprice").val();
+		if(states!="" && city!="" && property!="" && bhk!="" && propertyfor!="" && price!=""){
+			$.ajax({
+                url: '/propertysearch',
+                type: 'post',
+                data: {
+					states: states,
+					city: city,
+					property: property,
+					bhk: bhk,
+					propertyfor: propertyfor,
+					price: price,
+					_token: '{{ csrf_token() }}'
+				},
+				success: function(response) {
+					window.location.href = '/searchproperty'; 
+				},
+				error: function(xhr, status, error) {
+					console.error('AJAX error:', status, error);
+					alert('An error occurred while processing your request.');
+				}
+            });
+		}else{
+			alert("All Field Required");
+		}
+	});
 
+  	
+	$(document).ready(function(){
+        $.ajax({
+            url : '/State',
+            type:'post',
+            data : '&_token={{csrf_token()}}',
+            success:function(response){
+                $(".stateselect").html(response);
+            }
+        });
+    });
+    $(document).on("change",".states",function(){
+        var state = $(this).val();
+        $.ajax({
+            url : '/City',
+            type:'post',
+            data : 'id='+state+'&_token={{csrf_token()}}',
+            success:function(response){
+                $(".cityselect").html(response);
+            }
+        });
+    });
+
+</script>

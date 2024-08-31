@@ -15,7 +15,7 @@ use App\Models\Contact;
 class User extends Controller
 {
     public function index(Request $request){
-        $property = Properties::all();
+        $property = Properties::paginate(6); 
         return view("welcome",["property"=>$property]);
     }
 
@@ -142,7 +142,7 @@ class User extends Controller
     }
     public function states(Request $request){
         $states = State::where('country_id', 101)->get();
-        $selectHTML = '<select class="form-control states" name="state"><option>Select State</option>';
+        $selectHTML = '<select class="form-control states" name="state"><option value="">Select State</option>';
         foreach ($states as $state) {
             $selectHTML .= '<option value="' . $state->id . '">' . $state->name . '</option>';
         }
@@ -152,7 +152,7 @@ class User extends Controller
     public function cities(Request $request){
         $id = $request->post('id');
         $cities = City::where('state_id', $id)->get();
-        $selectHTML = '<select class="form-control city" name="city"><option>Select City</option>';
+        $selectHTML = '<select class="form-control city" name="city"><option value="">Select City</option>';
         foreach ($cities as $city) {
             $selectHTML .= '<option value="' . $city->id . '">' . $city->name . '</option>';
         }
@@ -253,126 +253,125 @@ class User extends Controller
     }
 
     public function propertysearch(Request $request){
-        $state = "";
-        $city = "";
-        if($request["state"]!="Select State"){
-            $state = State::where('id', $request["state"])->first();
-            $state = $state->name;
-        }
-        if($request["city"]!="Select City"){
-            $city = City::where('id', $request["city"])->first();
-            $city = $city->name;
-        }
-        $property = $request["property"];
-        $propertyfor = $request["propertyfor"];
-        if($propertyfor == "Buy"){
-            $propertyfor = "Sell";
-        }
-        $bhk = $request["bhk"];
-        $properties = Properties::where('state', $state)
-            ->where('city', $city)
+        $stateId = $request->input('states');
+        $stateName = State::where('id', $stateId)->pluck('name')->first();
+        $cityId = $request->input('city');
+        $cityName = City::where('id', $cityId)->pluck('name')->first();
+        $property = $request->input('property');
+        $propertyfor = $request->input('propertyfor') === 'Buy' ? 'Sell' : 'Rent'; 
+        $bhk = $request->input('bhk');
+        $price = $request->input('price');
+        
+        $propertiesQuery = Properties::query()
+            ->where('state', $stateName)
+            ->where('city', $cityName)
             ->where('property', $property)
             ->where('propertyfor', $propertyfor)
-            ->where('bhk', $bhk)
-            ->get();
-        if($properties->isEmpty()){
-            $properties = Properties::where('city', $city)->get();
-            if($properties->isEmpty()){
-                $properties = Properties::all();
-                return view("property",["property"=>$properties]);
-            }else{
-                return view("property",["property"=>$properties]);
-            }
+            ->where('bhk', $bhk);
             
-
-        }else{
-            return view("property",["property"=>$properties]);
+        if (!empty($price)) {
+            $propertiesQuery->where('amount', '<=', $price);
         }
+        $properties = $propertiesQuery->get();
+
+        $response = new Response();
+        $response->withCookie(cookie("message","",-1));
+        $response->withCookie(cookie("properties","",-1));
+        if ($properties->isEmpty()) {
+            $properties = Properties::where('city', $cityName)->get();
+            
+            if ($properties->isEmpty()) {
+                // No properties in the city, set the default properties
+                $properties = Properties::all();
+                $message = "No properties found matching your criteria. Here are some other properties.";
+            } else {
+                $message = "No exact match found. Here are some properties from the same city.";
+            }
+        } else {
+            $message = "Properties matching your search.";
+        }
+        $response->withCookie(cookie("message",$message,60*24*7*30));
+        $request->session()->put("properties",$properties);
+    
+        return $response;
     }
+
+    public function searchproperty(Request $request){
+        $message = $request->cookie("message");
+        $properties = $request->session()->get('properties');
+        return view('property')->with([
+            'cookieMessage' => $message,
+            'properties' => $properties
+        ]);
+    }
+    
 
     public function Uploadproperty(Request $request){
         return view("Uploadproperty");
     }
-    public function propertyuser(Request $request){
-        $request->validate(
-            [
-                "property"=>"required",
-                "category"=>"required",
-                "area"=>"required",
-                "unit"=>"required",
-                "amount"=>"required",
-                "amounttype"=>"required",
-                "propertyfor"=>"required",
-                "bhk"=>"required",
-                "state"=>"required",
-                "city"=>"required",
-                "description"=>"required",
-                "uploaderaddress"=>"required",
-                "photo"=>"required"
-            ]
-        );
+    public function propertyuser(Request $request){        
+        $request->validate([
+            'propertyType' => 'required',
+            'propertyCategory' => 'required',
+            'area' => 'required|integer|min:50',
+            'unit' => 'required',
+            'amount' => 'required|numeric',
+            'amountType' => 'required',
+            'propertyFor' => 'required',
+            'bhk' => 'required|integer',
+            'state' => 'required',
+            'city' => 'required',
+            'description' => 'required',
+            'uploaderAddress' => 'required|string',
+            'photo' => 'required|image|mimes:jpg,png,jpeg|max:2048', // Validate image
+        ]);
+
         $maxsn = Properties::all();
-        $sn = $maxsn->max('sn');
-        $sn++;
-        $a=array();
-		for($i='A' ; $i<='Z' ; $i++){
-			array_push($a,$i);
-			if($i=='Z')
-				break; 
-		}
-		for($i='a' ; $i<='z' ; $i++){
-			array_push($a,$i);
-			if($i=='z')
-				break; 
-		}
-		for($i=0 ; $i<=9 ; $i++){
-			array_push($a,$i);
-		}
-		shuffle($a);
-		$code="";
-		for($i=0; $i<6 ; $i++){
-			$code=$code.$a[$i];
-		}
-        $code = $code."_".$sn;
-        $image = $request->file('photo');
-        $name=$code.".jpg";
-        $target = public_path('/images');
-        $image->move($target, $name);
-        $directory = $target . '/' . $code;
-        if (!file_exists($directory)) {
-            mkdir($directory, 0777, true);
+        $sn = $maxsn->max('sn') + 1;
+        $characters = array_merge(range('A', 'Z'), range('a', 'z'), range(0, 9));
+        shuffle($characters);
+        $code = substr(implode($characters), 0, 6) . "_$sn";
+
+        if ($request->hasFile('photo')) {
+            $image = $request->file('photo');
+            $name = $code . ".jpg";
+            $target = public_path('/images');
+            $image->move($target, $name);
+
+            $directory = $target . '/' . $code;
+            if (!file_exists($directory)) {
+                mkdir($directory, 0777, true);
+            }
         }
-        $state = State::where('id', $request["state"])->first();
-        $state = $state->name;
-        $city = City::where('id', $request["city"])->first();
-        $city = $city->name;
+        $state = State::where('id', $request->input('state'))->first()->name;
+        $city = City::where('id', $request->input('city'))->first()->name;
+        
         $details = new Properties;
-        $details->sn= $sn;
-        $details->code= $code;
-        $details->rcode= $code;
-        $details->property = $request["property"];
-        $details->category = $request["category"];
-        $details->area = $request["area"];
-        $details->unit = $request["unit"];
-        $details->amount = $request["amount"];
-        $details->amounttype = $request["amounttype"];
-        $details->propertyfor = $request["propertyfor"];
-        $details->description = $request["description"];
-        $details->bhk = $request["bhk"];
-        $details->state =  $state;
+        $details->sn = $sn;
+        $details->code = $code;
+        $details->rcode = $code;
+        $details->property = $request->input('propertyType');
+        $details->category = $request->input('propertyCategory');
+        $details->area = $request->input('area');
+        $details->unit = $request->input('unit');
+        $details->amount = $request->input('amount');
+        $details->amounttype = $request->input('amountType');
+        $details->propertyfor = $request->input('propertyFor');
+        $details->description = $request->input('description');
+        $details->bhk = $request->input('bhk');
+        $details->state = $state;
         $details->city = $city;
         $email = $request->cookie("realestate");
         $data = Login::find($email);
-        $details->uploaderaddress =  $request["uploaderaddress"];
+        $details->uploaderaddress =  $request["uploaderAddress"];
         $details->uploaderemail = $email;
         $details->uploaderphone = $data->phone;
         $details->uploader = $data->user;
         $details->save();
-        $data=compact("code");
-        return view("/uploadimage")->with($data);
+        return response()->json(['code' => $code]);     
     }
  
-    public function uploadnextimage($code,Request $request){
+    public function uploadnextimage(Request $request){
         $a=array();
 		for($i='A' ; $i<='Z' ; $i++){
 			array_push($a,$i);
@@ -392,10 +391,11 @@ class User extends Controller
 		for($i=0; $i<6 ; $i++){
 			$newcode=$newcode.$a[$i];
 		}
+        $code  = $request->input('code');
         $newcode = $newcode."_".$code;
         $count = Images::where("code", $code)->count();
         if($count == 3){
-            return redirect("/Uploadproperty")->with(["success"=>"Successfully Upload Limited Photo"]);
+            return redirect("/Admin/dashboard")->with(["success"=>"Successfully Upload Limited Photo"]);
         }else{
             $image = $request->file('photo');
             $name=$newcode.".jpg";
@@ -406,7 +406,76 @@ class User extends Controller
             $imagedetails->imgcode= $newcode;
             $imagedetails->save();
             $data = compact("code");
-            return view("/uploadimage")->with($data);
+            return view("/Admin/uploadimage")->with($data);
         }
-    } 
+    }
+    
+    public function editproperty(Request $request){
+        $email = $request->cookie('realestate');
+        $properties = Properties::where('uploaderemail', $email)->get();
+        
+        if ($properties->isEmpty()) {
+            return view("editproperty",["properties"=>""]);
+        } else {
+            
+            return view("editproperty",["properties"=>$properties]);
+        }
+    }
+    public function propertyedits($code, Request $request){
+        $propertydetail = Properties::find($code);
+        $data = ['propertydetail' => $propertydetail];
+        return view("propertyedits")->with($data);
+    }
+    public function updateproperty($code, Request $request){
+        $request->validate(
+            [
+                "property"=>"required",
+                "category"=>"required",
+                "area"=>"required",
+                "unit"=>"required",
+                "amount"=>"required",
+                "amounttype"=>"required",
+                "propertyfor"=>"required",
+                "bhk"=>"required",
+                "state"=>"required",
+                "city"=>"required",
+                "description"=>"required",
+                "uploaderaddress"=>"required"
+            ]
+        );
+        $state = State::where('id', $request->input('state'))->first()->name;
+        $city = City::where('id', $request->input('city'))->first()->name;
+        $details = Properties::find($code);
+        $details->property = $request["property"];
+        $details->category = $request["category"];
+        $details->area = $request["area"];
+        $details->unit = $request["unit"];
+        $details->amount = $request["amount"];
+        $details->amounttype = $request["amounttype"];
+        $details->propertyfor = $request["propertyfor"];
+        $details->description = $request["description"];
+        $details->bhk = $request["bhk"];
+        $details->state = $state;
+        $details->city = $city;
+        $details->uploaderaddress = $request["uploaderaddress"];
+        $details->save();
+        return redirect("/editproperty")->with(["success"=>"Property Update SuccessFully"]);
+    }
+    
+    public function deleteproperty($code, Request $request){
+        $directory = public_path('/images/' . $code);
+        foreach(glob($directory . '/*') as $file) {
+            if(is_dir($file)) {
+                $this->deleteDirectory($directory);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($directory);
+        
+        Properties::find($code)->delete();
+        unlink(public_path('/images/'.$code.'.jpg'));
+        return redirect("/editproperty")->with(["success"=>"Property Deleted"]);
+    }
+    
 }

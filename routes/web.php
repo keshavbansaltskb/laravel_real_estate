@@ -20,9 +20,12 @@ Route::post("/Admin/action",[Admin::class,"action"]);
 Route::get("/Admin/dashboard",[Admin::class,"dash"]);
 Route::get("/Admin/message",[Admin::class,"message"]);
 Route::get("/Admin/property",[Admin::class,"property"]);
+
 Route::get("/Admin/uploadimage",[Admin::class,"uploadimage"]);
-Route::post("/Admin/uploadnextimage/{code}",[Admin::class,"uploadnextimage"]);
+Route::post("/Admin/uploadnextimage",[Admin::class,"uploadnextimage"]);
 Route::post("/Admin/uploadproperty",[Admin::class,"uploadproperty"]);
+Route::get("/Admin/demo",[Admin::class,"demo"]);
+
 Route::get("/Admin/propertyedit/{code}",[Admin::class,"propertyedit"]);
 Route::post("/Admin/updateproperty/{code}",[Admin::class,"updateproperty"]);
 Route::get("/Admin/propertyview/{code}",[Admin::class,"propertyview"]);
@@ -42,15 +45,24 @@ Route::get("/Login",[User::class,"login"]);
 Route::get("/logout",[User::class,"logout"]);
 Route::post("/loginuser",[User::class,"loginuser"]);
 Route::post("/propertlogin/{code}",[User::class,"propertlogin"]);
-Route::post("/propertysearch",[User::class,"propertysearch"]);
+
+Route::post('/propertysearch', [User::class, 'propertysearch']);
+Route::get("/searchproperty",[User::class,"searchproperty"]);
+
 Route::get("/Edit",[User::class,"Edit"]);
 Route::post("/EditProfile",[User::class,"EditProfile"]);
 Route::get("/Password",[User::class,"Password"]);
 Route::post("/changepass",[User::class,"changepass"]);
 Route::get("/Uploadproperty",[User::class,"Uploadproperty"]);
+
 Route::post("/propertyuser",[User::class,"propertyuser"]);
-Route::post("/uploadnextimage/{code}",[User::class,"uploadnextimage"]);
+Route::post("/uploadnextimage",[User::class,"uploadnextimage"]);
 Route::get("/demo",[User::class,"demo"]);
+
+Route::get("/editproperty",[User::class,"editproperty"]);
+Route::get("/propertyedits/{code}",[User::class,"propertyedits"]);
+Route::post("/updateproperty/{code}",[User::class,"updateproperty"]);
+Route::get("/deleteproperty/{code}",[User::class,"deleteproperty"]);
 
 
 // Sign up Check 

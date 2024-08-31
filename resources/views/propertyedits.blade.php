@@ -1,27 +1,15 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="{{url("/css/style.css")}}">
 <script src="{{url("/jquery-3.6.0.min.js")}}"></script>
 
-@extends("Admin/master")
+@extends("master")
 
 @section("mainmenu")
 
 <body>
 <div class="container">
-        <?php
-            $err=session()->get('success');
-            if(strlen($err)>0 ){
-                ?>
-                <div class="alert alert-success">
-                <?=$err?>
-            </div>
-            <?php
-            }
-        ?>
         <h5 class="card-title text-center">UPDATE PROPERTY DETAILS</h5>
         <br>
-        <label id="show"></label>
-        <form action="/Admin/updateproperty/{{$propertydetail->rcode}}" method="post">
+        <label id="show"><b>Edit Your Property</b></label>
+        <form action="/updateproperty/{{$propertydetail->rcode}}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row" style="margin-bottom:10px">
                 <select class='form-control' id="propertyType" name="property">
@@ -29,15 +17,14 @@
                     <option value="Residential">Residential</option>
                     <option value="Commercial">Commercial</option>
                 </select>
-                <div class="text-danger">
-                    @error("property")
-                        {{$message}}
-                    @enderror
-                </div>
             </div>
-            
+            <div class="text-danger">
+                @error("property")
+                    {{$message}}
+                @enderror
+            </div>
             <div class="row" id="categoryDropdown" style="display:none;margin-bottom:10px">
-                <select class='form-control' id="propertyCategory" name="category">
+                 <select class='form-control' id="propertyCategory" name="category">
                     <option value="">Select Category</option>
                 </select>
                 <div class="text-danger">
@@ -46,7 +33,6 @@
                     @enderror
                 </div>
             </div>
-           
             <div class='row' style="margin-bottom:10px">
                 <input type="number" name="area" value="{{$propertydetail->area}}" placeholder='Enter Area' name="area" class='form-control area'></input>
             </div>
@@ -73,7 +59,6 @@
                     @enderror
                 </div>
             </div>
-           
             <div class="row" style="margin-bottom:10px">
                 <input type="number" value="{{$propertydetail->amount}}" name="amount" placeholder="Enter Amount" class="form-control"> 
             </div>
@@ -154,30 +139,6 @@
                 @enderror
             </div>
             <div class='row' style='margin-bottom:10px'>
-                <input  type='text' value="{{$propertydetail->uploader}}" name="uploadername" placeholder='Enter Property Uploader Name' class='form-control'></input>
-            </div>
-            <div class="text-danger">
-                @error("uploadername")
-                    {{$message}}
-                @enderror
-            </div>
-            <div class='row' style='margin-bottom:10px'>
-                <input  type='email'  value="{{$propertydetail->uploaderemail}}" name="uploaderemail" placeholder='Enter Property Uploader Email' class='form-control'></input>
-            </div>
-            <div class="text-danger">
-                @error("uploaderemail")
-                    {{$message}}
-                @enderror
-            </div>
-            <div class='row' style='margin-bottom:10px'>
-                <input  type='number'  value="{{$propertydetail->uploaderphone}}" name="uploaderphone" placeholder='Enter Property Uploader Phone' class='form-control'></input>
-            </div>
-            <div class="text-danger">
-                @error("uploaderphone")
-                    {{$message}}
-                @enderror
-            </div>
-            <div class='row' style='margin-bottom:10px'>
                 <textarea rows='5' name="uploaderaddress" placeholder='Enter Property Uploader Address' class='form-control'>{{$propertydetail->uploaderaddress}}</textarea>
             </div>
             <div class="text-danger">
@@ -185,8 +146,7 @@
                     {{$message}}
                 @enderror
             </div>
-            <input  type='submit' value="Update" class='btn btn-primary' style="margin-top:30px"></input>
-            
+            <input type='submit' value="Update" class='btn btn-primary' style="margin-top:30px;margin-bottom:50px"></input>
         </form>
     </div>
 </body>
@@ -230,6 +190,8 @@
         }
         
     });
+
+
     $(document).ready(function(){
         $.ajax({
             url : '/State',

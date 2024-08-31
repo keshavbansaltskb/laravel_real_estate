@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row" style="margin-bottom:60px">
         <div class="col-lg-3"></div>
-        <div class="col-lg-6">
+        <div class="col-lg-6" style="margin-bottom:55px">
             <?php
                 $success=session()->get('success');
                 if(strlen($success)>0 ){

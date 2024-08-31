@@ -18,10 +18,8 @@
             <?php
             }
         ?>
-        <h5 class="card-title text-center">UPDATE PROPERTY DETAILS</h5>
-        <br>
-        <label id="show"></label>
-        <form action="/Admin/updateproperty/{{$propertydetail->rcode}}" method="post">
+        <h5 class="card-title"><b>Enter Property Details:</b></h5>
+        <form action="uploadproperty" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row" style="margin-bottom:10px">
                 <select class='form-control' id="propertyType" name="property">
@@ -29,15 +27,14 @@
                     <option value="Residential">Residential</option>
                     <option value="Commercial">Commercial</option>
                 </select>
-                <div class="text-danger">
-                    @error("property")
-                        {{$message}}
-                    @enderror
-                </div>
             </div>
-            
+            <div class="text-danger">
+                @error("property")
+                    {{$message}}
+                @enderror
+            </div>
             <div class="row" id="categoryDropdown" style="display:none;margin-bottom:10px">
-                <select class='form-control' id="propertyCategory" name="category">
+                 <select class='form-control' id="propertyCategory" name="category">
                     <option value="">Select Category</option>
                 </select>
                 <div class="text-danger">
@@ -48,16 +45,16 @@
             </div>
            
             <div class='row' style="margin-bottom:10px">
-                <input type="number" name="area" value="{{$propertydetail->area}}" placeholder='Enter Area' name="area" class='form-control area'></input>
+                <input type="number" name="area" placeholder='Enter Area' name="area" class='form-control area'></input>
             </div>
             <div class="text-danger">
                 @error("area")
                     {{$message}}
                 @enderror
             </div>
-            <div class="row" id="areaunit" style="margin-bottom:10px">
+            <div class="row" id="areaunit" style="display:none;margin-bottom:10px">
                 <select class='form-control' name="unit">
-                    <option value="{{$propertydetail->unit}}">{{$propertydetail->unit}}</option>
+                    <option value="">Area Unit</option>
                     <option value="sq. ft.">sq. ft.</option>
                     <option value="sq. yards">sq. yards</option>
                     <option value="sq. m.">sq. m.</option>
@@ -75,7 +72,7 @@
             </div>
            
             <div class="row" style="margin-bottom:10px">
-                <input type="number" value="{{$propertydetail->amount}}" name="amount" placeholder="Enter Amount" class="form-control"> 
+                <input type="number" name="amount" placeholder="Enter Amount" class="form-control"> 
             </div>
             <div class="text-danger">
                 @error("amount")
@@ -84,7 +81,7 @@
             </div>
             <div class="row" style="margin-bottom:10px">
                 <select class='form-control' name="amounttype">
-                    <option value="{{$propertydetail->amounttype}}">{{$propertydetail->amounttype}}</option>
+                    <option value="">Select Amount type</option>
                     <option value="INR">INR</option>
                     <option value="USD">USD</option>
                 </select>
@@ -96,8 +93,7 @@
             </div>
             <div class="row" style="margin-bottom:10px">
                 <select class='form-control' name="propertyfor">
-                    <option value="{{$propertydetail->propertyfor}}">{{$propertydetail->propertyfor}}</option>
-                    <option value="Buy">Buy</option>
+                    <option value="">Property For</option>
                     <option value="Rent">Rent</option>
                     <option value="Sell">Sell</option>
                 </select>
@@ -109,7 +105,7 @@
             </div>
             <div class='row' style="margin-bottom:10px">
                 <select class='form-control' name="bhk">
-                    <option value="{{$propertydetail->bhk}}">{{$propertydetail->bhk}}</option>
+                    <option value="">BHK</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -126,7 +122,7 @@
                 @enderror
             </div>
             <div class="row stateselect" style="margin-bottom:10px">
-                <select class="form-control states" name="state">
+                <select class="form-control state" name="state">
                     <option>Select State</option>
                 </select>
             </div>
@@ -137,7 +133,7 @@
             </div>
             <div class="row cityselect" style="margin-bottom:10px">
                 <select class="form-control city" name="city">
-                    <option value="">Select City</option>
+                    <option>Select City</option>
                 </select>
             </div>
             <div class="text-danger">
@@ -145,8 +141,9 @@
                     {{$message}}
                 @enderror
             </div>
+            
             <div class="row"  style="margin-bottom:10px">
-                <textarea class="form-control" rows="5" name="description" placeholder="Enter Property Description">{{$propertydetail->description}}</textarea>
+                <textarea class="form-control" rows="5" name="description" placeholder="Enter Property Description"></textarea>
             </div>
             <div class="text-danger">
                 @error("description")
@@ -154,7 +151,7 @@
                 @enderror
             </div>
             <div class='row' style='margin-bottom:10px'>
-                <input  type='text' value="{{$propertydetail->uploader}}" name="uploadername" placeholder='Enter Property Uploader Name' class='form-control'></input>
+                <input  type='text' name="uploadername" placeholder='Enter Property Uploader Name' class='form-control'></input>
             </div>
             <div class="text-danger">
                 @error("uploadername")
@@ -162,7 +159,7 @@
                 @enderror
             </div>
             <div class='row' style='margin-bottom:10px'>
-                <input  type='email'  value="{{$propertydetail->uploaderemail}}" name="uploaderemail" placeholder='Enter Property Uploader Email' class='form-control'></input>
+                <input  type='email' name="uploaderemail" placeholder='Enter Property Uploader Email' class='form-control'></input>
             </div>
             <div class="text-danger">
                 @error("uploaderemail")
@@ -170,7 +167,7 @@
                 @enderror
             </div>
             <div class='row' style='margin-bottom:10px'>
-                <input  type='number'  value="{{$propertydetail->uploaderphone}}" name="uploaderphone" placeholder='Enter Property Uploader Phone' class='form-control'></input>
+                <input  type='number' name="uploaderphone" placeholder='Enter Property Uploader Phone' class='form-control'></input>
             </div>
             <div class="text-danger">
                 @error("uploaderphone")
@@ -178,14 +175,23 @@
                 @enderror
             </div>
             <div class='row' style='margin-bottom:10px'>
-                <textarea rows='5' name="uploaderaddress" placeholder='Enter Property Uploader Address' class='form-control'>{{$propertydetail->uploaderaddress}}</textarea>
+                <textarea rows='5' name="uploaderaddress" placeholder='Enter Property Uploader Address' class='form-control'></textarea>
             </div>
             <div class="text-danger">
                 @error("uploaderaddress")
                     {{$message}}
                 @enderror
             </div>
-            <input  type='submit' value="Update" class='btn btn-primary' style="margin-top:30px"></input>
+            <label><b>Property Image</b></label>
+            <div class='row' style='margin-bottom:10px'>
+                <input type="file" name="photo" class="form-control">
+            </div>
+            <div class="text-danger">
+                @error("photo")
+                    {{$message}}
+                @enderror
+            </div>
+            <input  type='submit' value="Submit" class='btn btn-primary' style="margin-top:30px"></input>
             
         </form>
     </div>
@@ -230,6 +236,8 @@
         }
         
     });
+
+
     $(document).ready(function(){
         $.ajax({
             url : '/State',
