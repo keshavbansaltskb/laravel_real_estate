@@ -36,7 +36,7 @@
                 <div class="modal-body">
                     <form action="/message/{{ $detail->rcode}}" method="post">
                         @csrf
-                        <textarea rows="4" name="msg" placeholder="Send message for this property" class="form-control" style="width:100%" ></textarea><br>
+                        <textarea rows="4" name="msg" placeholder="Send message for this property" class="form-control" style="width:100%" required></textarea><br>
                         <button class="btn btn-primary">Send</button>
                     </form>
                 </div>

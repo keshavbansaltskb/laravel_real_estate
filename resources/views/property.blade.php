@@ -1,11 +1,19 @@
+<script src="{{url("/jquery-3.6.0.min.js")}}"></script>
 @extends("master")
 
 @section("mainmenu")
-
+    <style>
+        @media only screen and (min-width: 800px) {
+            #messagefont{
+                font-size:20px;
+            }
+        }
+    </style>
 <div class="container my-5">
+    
     <div class="row">
         <div class="col-lg-12" style="margin-top:2%;margin-bottom:2%">
-            <h4 style="font-size:35px;letter-spacing:5px;text-align:center">
+            <h4 style="font-size:35px;letter-spacing:5px;text-align:center" id="messagefont">
                 {{ $cookieMessage }}
             </h4>
         </div>

@@ -27,7 +27,7 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
-          <label class="modalclose">Submit</label>
+          <label class="btn btn-primary modalclose">Submit</label>
       </div>
 
     </div>
